@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 
 const Settings: React.FC = () => {
   const { currentUser } = useAuth();
@@ -125,22 +125,22 @@ const Settings: React.FC = () => {
             <div className="p-4">
               <div className="flex items-center">
                 <div className="h-16 w-16 rounded-full bg-gray-700 overflow-hidden">
-                  {currentUser?.profileImage ? (
+                  {currentUser?.user_metadata?.avatar_url ? (
                     <img 
-                      src={currentUser.profileImage} 
-                      alt={currentUser.name} 
+                      src={currentUser.user_metadata.avatar_url} 
+                      alt={currentUser?.user_metadata?.full_name || currentUser?.email}
                       className="h-full w-full object-cover"
                     />
                   ) : (
                     <div className="h-full w-full flex items-center justify-center bg-blue-600 text-white text-xl">
-                      {currentUser?.name.charAt(0).toUpperCase()}
+                      {(currentUser?.user_metadata?.full_name || currentUser?.email)?.charAt(0).toUpperCase()}
                     </div>
                   )}
                 </div>
                 <div className="ml-4">
-                  <h2 className="text-lg font-medium text-white">{currentUser?.name}</h2>
+                  <h2 className="text-lg font-medium text-white">{currentUser?.user_metadata?.full_name || currentUser?.email}</h2>
                   <p className="text-sm text-gray-400">{currentUser?.email}</p>
-                  <p className="text-xs text-gray-400 mt-1 capitalize">{currentUser?.role}</p>
+                  <p className="text-xs text-gray-400 mt-1 capitalize">{currentUser?.user_metadata?.role}</p>
                 </div>
               </div>
               

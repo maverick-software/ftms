@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Lock, Mail, AlertCircle } from 'lucide-react';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
-import { useAuth } from '../context/AuthContext';
+import { supabase } from '../lib/supabase';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -11,7 +11,6 @@ const Login: React.FC = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
-  const { login } = useAuth();
   const navigate = useNavigate();
   
   const handleSubmit = async (e: React.FormEvent) => {
@@ -26,10 +25,18 @@ const Login: React.FC = () => {
     setIsLoading(true);
     
     try {
-      await login(email, password);
+      const { error: supabaseError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (supabaseError) {
+        throw supabaseError;
+      }
+      console.log('Login successful, attempting to navigate to / ');
       navigate('/');
-    } catch (err) {
-      setError('Invalid email or password');
+    } catch (err: any) {
+      setError(err.message || 'Invalid email or password. Please try again.');
     } finally {
       setIsLoading(false);
     }

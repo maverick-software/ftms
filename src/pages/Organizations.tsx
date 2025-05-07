@@ -7,6 +7,7 @@ import Input from '../components/ui/Input';
 import Badge from '../components/ui/Badge';
 import Modal from '../components/modals/Modal';
 import { useOrganizations, useCreateOrganization } from '../hooks/useOrganizations';
+import { useAuth } from '../hooks/useAuth';
 import { Database } from '../lib/database.types';
 
 type Organization = Database['public']['Tables']['organizations']['Row'];
@@ -16,6 +17,12 @@ const Organizations: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  const { user, isAuthenticated, loading: authLoading } = useAuth();
+  console.log('Auth Loading:', authLoading);
+  console.log('Is Authenticated:', isAuthenticated);
+  console.log('User Object:', user);
+
   const [formData, setFormData] = useState({
     name: '',
     type: '',

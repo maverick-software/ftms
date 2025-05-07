@@ -12,7 +12,7 @@ import {
   Shield,
   Building2
 } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 
 interface SidebarItemProps {
   to: string;
@@ -41,16 +41,17 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ to, icon, label, isActive }) 
 const Sidebar: React.FC = () => {
   const location = useLocation();
   const { logout, currentUser } = useAuth();
+  console.log('Current User in Sidebar:', currentUser);
   
   const handleLogout = async () => {
-    await logout();
+    if (logout) {
+      await logout();
+    }
   };
   
   const isActive = (path: string) => {
     return location.pathname === path;
   };
-  
-  const isAdmin = currentUser?.role === 'admin' || currentUser?.role === 'instructor';
   
   const navItems = [
     {
@@ -63,37 +64,37 @@ const Sidebar: React.FC = () => {
       to: '/organizations',
       icon: <Building2 size={20} />,
       label: 'Organizations',
-      show: isAdmin
+      show: true
     },
     {
       to: '/students',
       icon: <Users size={20} />,
       label: 'Students',
-      show: isAdmin
+      show: true
     },
     {
       to: '/courses',
       icon: <BookOpen size={20} />,
       label: 'Courses',
-      show: isAdmin
+      show: true
     },
     {
       to: '/competencies',
       icon: <Bookmark size={20} />,
       label: 'Competencies',
-      show: isAdmin
+      show: true
     },
     {
       to: '/reports',
       icon: <FileText size={20} />,
       label: 'Reports',
-      show: isAdmin
+      show: true
     },
     {
       to: '/insurance',
       icon: <Shield size={20} />,
       label: 'Insurance',
-      show: isAdmin
+      show: true
     },
     {
       to: '/certifications',
@@ -134,21 +135,21 @@ const Sidebar: React.FC = () => {
       <div className="p-4 border-t border-gray-700">
         <div className="flex items-center mb-4">
           <div className="h-10 w-10 rounded-full bg-gray-700 overflow-hidden">
-            {currentUser?.profileImage ? (
+            {currentUser?.user_metadata?.avatar_url ? (
               <img 
-                src={currentUser.profileImage} 
-                alt={currentUser.name} 
+                src={currentUser.user_metadata.avatar_url} 
+                alt={currentUser?.user_metadata?.full_name || currentUser?.email}
                 className="h-full w-full object-cover"
               />
             ) : (
               <div className="h-full w-full flex items-center justify-center bg-blue-600 text-white">
-                {currentUser?.name.charAt(0).toUpperCase()}
+                {(currentUser?.user_metadata?.full_name || currentUser?.email)?.charAt(0).toUpperCase()}
               </div>
             )}
           </div>
           <div className="ml-3">
-            <p className="text-sm font-medium">{currentUser?.name}</p>
-            <p className="text-xs text-gray-400 capitalize">{currentUser?.role}</p>
+            <p className="text-sm font-medium">{currentUser?.user_metadata?.full_name || currentUser?.email}</p>
+            <p className="text-xs text-gray-400 capitalize">{currentUser?.user_metadata?.role}</p>
           </div>
         </div>
         
